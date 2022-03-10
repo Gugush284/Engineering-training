@@ -1,2 +1,2 @@
 # get
-Some scripts for github
+Some scripts for testing git push from windows
