@@ -1,2 +1,2 @@
 # get
-Some scripts for testing git push from windows
+Some scripts for testing Digital-to-analog converter
