@@ -2,11 +2,11 @@
 There are some programs from the MIPT course "Engineering training" 
 
 The following programs are presented:
-* DAC
-    * DAC converter from decimal to binary with display on the training board
-    * Formation of a triangular signal
-    * PWM Implementation
-* ADC
-    * The simplest ADC
-    * Serial ADC
-    * Simulation of voltage adjustment display
+* DAC - 4
+    * DAC converter from decimal to binary with display on the training board - 4.1
+    * Formation of a triangular signal - 4.2
+    * PWM Implementation - 4.3
+* ADC - 5
+    * The simplest ADC - 5.1
+    * Serial ADC - 5.2
+    * Simulation of voltage adjustment display - 5.3
