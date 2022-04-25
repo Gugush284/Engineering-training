@@ -10,3 +10,4 @@ The following programs are presented:
     * The simplest ADC - 5.1
     * Serial ADC - 5.2
     * Simulation of voltage adjustment display - 5.3
+* Automated measurements - 7
