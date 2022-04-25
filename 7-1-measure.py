@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 import matplotlib.pyplot as plt
+import os
 
 def adc():
     signal = [0, 0, 0, 0, 0, 0, 0, 0]
@@ -35,7 +36,6 @@ def main():
     
     start_time = time.perf_counter()
     volt_start = 0
-    volt_end = 0
 
     try:
         GPIO.setmode(GPIO.BCM)
@@ -50,38 +50,89 @@ def main():
             value = adc()
             volt_start = value/(2**len(dac)) * maxVolt
             if (volt_start == 0):
-                print(volt_start)
                 volt_list.append(volt_start)
                 break
+
+        prev = volt_start
+        prev_time = start_time
+        steps_quant = list()
+        time_list = list()
 
         while True:
             value = adc()
             volt = value/(2**len(dac)) * maxVolt
-            print(volt)
             volt_list.append(volt)
-            if (volt >= maxVolt*0.97):
-                print(volt_list)
+
+            current_time = time.perf_counter()
+            time_list.append(current_time-prev_time)
+            prev_time = current_time
+
+            steps_quant.append(volt - prev)
+            prev = volt
+
+            if (volt >= maxVolt*0.95):
                 break
 
         GPIO.output(troyka, 0)
         while True:
             value = adc()
             volt = value/(2**len(dac)) * maxVolt
-            print(volt)
             volt_list.append(volt)
+
+            steps_quant.append(prev - volt)
+            prev = volt
+
+            current_time = time.perf_counter()
+            time_list.append(current_time-prev_time)
+            prev_time = current_time
+
             if (volt <= maxVolt*0.02):
-                print(volt_list)
-                volt_end = volt
                 break
         
         end_time = time.perf_counter()
 
         del_t = end_time - start_time
-        print(del_t)
+
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'data.txt')
+        with open(path, "w") as output:
+            for item in volt_list:
+                data_str = str(item)
+                data_str += "\n"
+                output.write(data_str)
+
+        sampling = len(volt_list)/del_t
+
+        sum = 0
+        for elem in steps_quant:
+            sum += elem
+        step_quant = sum / len(steps_quant)
+
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'settings.txt')
+        with open(path, "w") as output_set:
+            str1 = "Sampling: "
+            str1 += str(sampling)
+            str1 += "\n"
+            output_set.write(str1)
+
+            str2 = "Step of quantization: "
+            str2 += str(step_quant)
+            str2 += "\n"
+            output_set.write(str2)
+
+        time_sum = 0
+        for time_item in time_list:
+            time_sum += time_item
+        measure_period = time_sum / len(time_list)
+
+        print("Settings:")
+        print("Time = {}".format(del_t))
+        print("Measurement period = {}".format(measure_period))
+        print("Sampling = {}".format(sampling))
+        print("Step of quantization = {}".format(step_quant))
+        print("Amount of points = {}".format(len(volt_list)))
 
         plt.plot(volt_list)
         plt.show()
-
     finally:
         GPIO.output(dac, 0)
         GPIO.output(leds, 0)
