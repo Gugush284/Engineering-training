@@ -1,0 +1,2 @@
+Sampling: 12.185242453782532
+Step of quantization: 0.005929687499999974
