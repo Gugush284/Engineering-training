@@ -1,5 +1,6 @@
 ## Description
 There are some programs from the MIPT course "Engineering training" 
+Status - development completed
 
 The following programs are presented:
 * DAC - 4
